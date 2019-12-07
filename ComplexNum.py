@@ -70,3 +70,22 @@ class ComplexNum:
 
     def abs(self):
         return math.sqrt(self*self.conjugate())
+
+
+def isInstancePPL(object1, classInfo):
+    return isSubclassPPL(type(object1), classInfo)
+
+
+def numInstancePPL(object1, classInfo):
+    return numSubclassPPL(type(object1), classInfo)
+
+
+def isSubclassPPL(class1, classInfo):
+    return classInfo in class1.mro()
+
+def numSubclassPPL(class1, classInfo):
+    ancestors_list = class1.mro()
+    if classInfo in ancestors_list:
+        return ancestors_list.index(classInfo) + 1
+    return 0
+
