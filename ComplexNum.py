@@ -1,4 +1,6 @@
 import math
+from functools import reduce
+from inspect import signature
 
 class ComplexNum:
     def __init__(self, re, im=0):
@@ -89,3 +91,38 @@ def numSubclassPPL(class1, classInfo):
         return ancestors_list.index(classInfo) + 1
     return 0
 
+
+def is_iterable(obj):
+    try:
+        lst = iter(obj)
+    except TypeError as e:
+        return False
+    return True
+
+def count_if(lst,func):
+    if (not is_iterable(lst) or len(lst) < 1):
+        raise Exception("lst must be non emptry iterrable object")
+    if (not callable(func) or len(signature(func).parameters) != 1):
+        raise Exception("func must be a function with 1 parameters")
+    return len(list(filter(func,lst)))
+
+def for_all(lst,func1,func2):
+    if (not is_iterable(lst) or len(lst) < 1):
+        raise Exception("lst must be non emptry iterrable object")
+    if (not callable(func1) or len(signature(func1).parameters) != 1):
+        raise Exception("func1 must be a function with 1 parameters")
+    if (not callable(func2) or len(signature(func2).parameters) != 1):
+        raise Exception("func2 must be a function with 1 parameters")
+    return reduce(lambda x,y : x and y,map(func2,list(map(func1,lst))))
+
+def for_all_red(lst,func1,func2):
+    if (not is_iterable(lst) or len(lst) < 1):
+        raise Exception("lst must be non emptry iterrable object")
+    if (not callable(func1) or len(signature(func1).parameters) != 2):
+        raise Exception("func1 must be a function with 2 parameters")
+    if (not callable(func2) or len(signature(func2).parameters) != 1):
+        raise Exception("func2 must be a function with 1 parameters")
+    return func2(reduce(func1,lst))
+
+def there_exists(lst,n,func1):
+    return count_if(lst,func1) == n
