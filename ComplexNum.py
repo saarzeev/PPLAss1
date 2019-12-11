@@ -66,23 +66,33 @@ class ComplexNum:
     def abs(self):
         return math.sqrt((self * self.conjugate()).re)
 
-def isInstancePPL(object1, classInfo):
-    return isSubclassPPL(type(object1), classInfo)
+def isInstancePPL(object1,classInfo):
+    if type(object1) == classInfo:
+        return True
+    for objtype in classInfo.__subclasses__():
+        return isInstancePPL(object1,objtype)
+    return False
 
-
-def numInstancePPL(object1, classInfo):
-    return numSubclassPPL(type(object1), classInfo)
-
-
-def isSubclassPPL(class1, classInfo):
-    return classInfo in class1.mro()
-
-def numSubclassPPL(class1, classInfo):
-    ancestors_list = class1.mro()
-    if classInfo in ancestors_list:
-        return ancestors_list.index(classInfo) + 1
+def numInstancePPL(object1,classInfo):
+    if type(object1) == classInfo:
+        return 1
+    for objtype in classInfo.__subclasses__():
+        return (0,1)[isInstancePPL(object1,objtype)] + numInstancePPL(object1,objtype)
     return 0
 
+def isSubclassPPL(class1,classInfo):
+    if class1 == classInfo:
+        return True
+    for objtype in classInfo.__subclasses__():
+        return isSubclassPPL(class1,objtype)
+    return False
+
+def numSubclassPPL(class1,classInfo):
+    if class1 == classInfo:
+        return 1
+    for objtype in classInfo.__subclasses__():
+        return (0,1)[isSubclassPPL(class1,objtype)] + numSubclassPPL(class1,objtype)
+    return 0
 
 def is_iterable(obj):
     try:
