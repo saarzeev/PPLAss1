@@ -48,3 +48,21 @@ print(there_exists([1, 0, 8],3, lambda x: x > 2)) #False
 print(there_exists([1, 1, 8],2, lambda x: x == 1)) #True
 print(there_exists([1, 1, 8],3, lambda x: x > 0 )) #True
 print(there_exists([1, 1, 8],"3", lambda x: x + 1 )) #False
+
+
+z = ComplexNum(1,2)
+
+print(str(z))
+print(z == ComplexNum(1,1))
+print(z == ComplexNum(1,2))
+print(z + ComplexNum(1,-3))
+print(-z)
+print(z-ComplexNum(4,3))
+print(z*z)
+print(str(z * ComplexNum(2, 3)))
+try:
+   print(str(z * 2))
+except:
+    print("")
+print(str(z.conjugate()))
+print(str(z.abs()))

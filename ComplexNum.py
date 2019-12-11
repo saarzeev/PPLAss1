@@ -4,30 +4,27 @@ from inspect import signature
 
 class ComplexNum:
     def __init__(self, re, im=0):
-        self.re = re
-        self.im = im
+        self._re = re
+        self._im = im
 
-        if im < 0:
-            self._im_sign = "-"
-        else:
-            self._im_sign = "+"
-
+    @property
     def re(self):
-        return self.re
+        return self._re
 
+    @property
     def im(self):
-        return self.im
+        return self._im
 
     def to_tuple(self):
         return (self.re, self.im)
 
     def __repr__(self):
-        return str(self.re) + " " + self._im_sign + " " + str(abs(self.im)) + "i"
+        sign = lambda x: ("+", "-")[x < 0]
+        return "%d %s %di" % (self.re, sign(self.im), abs(self.im))
 
     def __eq__(self, other):
         if isinstance(other, (int, float)):
             other = ComplexNum(other)
-
         if isinstance(other, ComplexNum):
             return self.im == other.im and self.re == other.re
         else:
@@ -36,43 +33,38 @@ class ComplexNum:
     def __add__(self, other):
         if isinstance(other, (int, float)):
             other = ComplexNum(other)
-
         if isinstance(other, ComplexNum):
             return ComplexNum(self.re + other.re, self.im + other.im)
+        else:
+            raise Exception("Complex addition only defined for Complex Numbers,Integers and Floats.")
 
     def __radd__(self, other):
         return self + other
 
     def __neg__(self):
-        return ComplexNum(- self.re, - self.im)
+        return ComplexNum(-self.re, - self.im)
 
     def __sub__(self, other):
         if isinstance(other, (int, float)):
             other = ComplexNum(other)
-
         if isinstance(other, ComplexNum):
             return self + (-other)
+        else:
+            raise Exception("Complex substitution only defined for Complex Numbers,Integers and Floats.")
 
     def __rsub__(self, other):
-        if isinstance(other, (int, float)):
-            other = ComplexNum(other)
-
-        if isinstance(other, ComplexNum):
-            return (-self) + other
+        return (-self) + other
 
     def __mul__(self, other):
         if not isinstance(other, ComplexNum):
             raise TypeError("Complex multiplication only defined for Complex Numbers.")
-
-        # (x + yi)(u + vi) = (xu – yv) + (xv + yu)i
-        return ComplexNum(self.re * other.re() - self.im * other.im, self.re * other.im + self.im * other.re)
+        return ComplexNum((self.re * other.re - self.im * other.im), (self.re * other.im + self.im * other.re))
 
     def conjugate(self):
         return ComplexNum(self.re, -self.im)
 
     def abs(self):
-        return math.sqrt(self*self.conjugate())
-
+        return math.sqrt((self * self.conjugate()).re)
 
 def isInstancePPL(object1, classInfo):
     return isSubclassPPL(type(object1), classInfo)
